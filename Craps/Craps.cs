@@ -69,7 +69,7 @@ namespace Craps
         public void bet()
         {
             Console.WriteLine("Chips remaining: " + chips);
-            Console.WriteLine("Please input your wager for upcomong round: ");
+            Console.WriteLine("Please input your wager for upcoming round: ");
             wager = Int32.Parse(Console.ReadLine());
             while (wager <= 0)
             {
@@ -219,8 +219,8 @@ namespace Craps
         {
             while (((dieOne.face + dieTwo.face) != round.getPlayersPoint()) || (dieOne.face + dieTwo.face) != 7)
             {
-                Console.WriteLine("No point! must reroll again.");
-                Console.Read();
+                Console.Write("\nNo point! must reroll again.");
+                Console.ReadLine();
                 dieOne.roll();
                 dieTwo.roll();
                 showFaces();
@@ -274,7 +274,7 @@ namespace Craps
         void gameover()
         {
             playing = false;
-            Console.WriteLine("Game quit, thank you for playing!");
+            Console.WriteLine("\nGame quit, thank you for playing!");
             Console.WriteLine("Player: " + player.getName());
             Console.WriteLine("Final Chips: " + player.getChips());
             Console.WriteLine("Rounds played: " + Round.getRounds());
@@ -290,10 +290,6 @@ namespace Craps
             if ((Console.ReadLine().ToLower().Equals("n")))
             {
                 gameover();
-            }
-            else
-            {
-                Console.WriteLine("Starting Round " + Round.getRounds());
             }
         }
     }
