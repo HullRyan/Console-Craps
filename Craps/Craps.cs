@@ -71,18 +71,18 @@ namespace Craps
             Console.WriteLine("Chips remaining: " + chips); //Displays remaining chips
             Console.WriteLine("Please input your wager " +
                 "for upcoming round: ");
-            wager = Int32.Parse(Console.ReadLine());        //Parses response to int
-            while (wager <= 0)
-            {
+
+            while (true)    //TryParse to get correct int from the string returned from read line
+            {               //Found on microsoft docs https://docs.microsoft.com/en-us/dotnet/api/system.int32.tryparse?view=net-5.0
+                if (int.TryParse(Console.ReadLine(), out wager))
+                {
+                    if (wager > 0 && wager <= chips)
+                    {
+                        break;
+                    }
+                }
                 Console.WriteLine("Sorry, please input a wager" +
                     " above 0 and below your remaining chips: ");
-                wager = Int32.Parse(Console.ReadLine());    //Validation for bet amount
-            }
-            while (wager > chips)
-            {
-                Console.WriteLine("Sorry, please input a wager" +
-                    " above 0 and below your remaining chips: ");
-                wager = Int32.Parse(Console.ReadLine());
             }
         }
 
