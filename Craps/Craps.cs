@@ -1,8 +1,11 @@
-﻿using System;
+﻿// Made by Ryan Hull
+// ITCS 3112 - 051
+
+using System;
 
 namespace Craps
 {
-    /* 
+    /*       Initial instructions
          * Player rolls 2 die
          * Sum of die faces are calculated
          * First throw:
@@ -23,9 +26,9 @@ namespace Craps
          * All players chips are used
          * 
          * Display final chips on exit
-        */
+    */
 
-    class Craps
+    class Craps //Contains main function, which crates a Craps game object and starts the game.
     {
         static void Main(string[] args)
         {
@@ -34,25 +37,21 @@ namespace Craps
         }
     }
 
-    class Dice
+    class Dice //Dice object, holds die face and roll function
     {
-        public int face = 0;
-        Random random = new Random();
+        public int face = 0;            //Simulates face of die
+        Random random = new Random();   //Random object to simulate roll
 
-        public int roll()
+        public int roll()               //Roll function, returns random int betweem 1-6
         {
             this.face = random.Next(1, 7);
             return this.face;
         }
-        public int returnFace()
-        {
-            return this.face;
-        }
     }
 
-    class Player
+    class Player //Player object, holds player info ie. name and chip count
     {
-        public Player()
+        public void startPlayer()   //Initializes player and fields
         {
             Console.WriteLine("Please input player name: ");
             playerName = Console.ReadLine();
@@ -60,127 +59,136 @@ namespace Craps
             wager = 0;
         }
 
-        string playerName;
-        int chips;
-        int wager;
-        int resetCount;
-        const int startingChips = 100;
+        string playerName;              //Players name
+        int chips;                      //Current chip count
+        int wager;                      //Current wager
+        int resetCount;                 //Tracks how many times player resets
+        int roundsWon;                  //Tracks how many rounds the player has won
+        public int startingChips = 100; //Starting chip count
 
-        public void bet()
+        public void bet()       //Gets bet from user
         {
-            Console.WriteLine("Chips remaining: " + chips);
-            Console.WriteLine("Please input your wager for upcoming round: ");
-            wager = Int32.Parse(Console.ReadLine());
+            Console.WriteLine("Chips remaining: " + chips); //Displays remaining chips
+            Console.WriteLine("Please input your wager " +
+                "for upcoming round: ");
+            wager = Int32.Parse(Console.ReadLine());        //Parses response to int
             while (wager <= 0)
             {
-                Console.WriteLine("Sorry, please input a wager above 0 and below your remaining chips: ");
-                wager = Int32.Parse(Console.ReadLine());
+                Console.WriteLine("Sorry, please input a wager" +
+                    " above 0 and below your remaining chips: ");
+                wager = Int32.Parse(Console.ReadLine());    //Validation for bet amount
             }
             while (wager > chips)
             {
-                Console.WriteLine("Sorry, please input a wager above 0 and below your remaining chips: ");
+                Console.WriteLine("Sorry, please input a wager" +
+                    " above 0 and below your remaining chips: ");
                 wager = Int32.Parse(Console.ReadLine());
             }
         }
 
-        public void win()
+        public void win()       //Adds win to counter and adds wager to chip count
         {
+            roundsWon++;
             chips += wager;
         }
 
-        public void loss()
+        public void loss()      //Removes wager from chip count
         {
             chips -= wager;
         }
 
-        public int getChips()
-        {
-            return chips;
-        }
-
-        public void resetChips()
+        public void resetChips()//Resets chip count to starting amount and adds a reset to the counter
         {
             chips = startingChips;
             resetCount++;
         }
-        public int getResets()
+
+        public int getChips()   //Getter for chip count
+        {
+            return chips;
+        }
+
+        public int getResets()  //Getter for reset count
         {
             return resetCount;
         }
-        public string getName()
+
+        public string getName() //Getter for player name
         {
             return playerName;
         }
+
+        public int getWins()    //Getter for rounds won
+        {
+            return roundsWon;
+        }
     }
 
-    class Round
+    class Round //Round object, holds round count and players point
     {
-        static int Rounds;
-        static int RoundsWon;
-        int playersPoint;
-        public Round()
+        static int Rounds;  //Holds round count across instances
+        int playersPoint;   //Holds round count per instance
+        public Round()  //Adds round to counter and displays the current count
         {
             Rounds++;
 
             Console.WriteLine("Current Round: " + Rounds);
         }
-
-        public static void addWin()
-        {
-            RoundsWon++;
-        }
-        public static int getWins()
-        {
-            return RoundsWon;
-        }
-        public static int getRounds()
+        public static int getRounds()   //Getter for round count
         {
             return Rounds;
         }
 
-        public void setPlayersPoint(int point)
+        public void setPlayersPoint(int point)  //Takes roll sum and sets players point
         {
             playersPoint = point;
         }
 
-        public int getPlayersPoint()
+        public int getPlayersPoint()    //Getter for players point
         {
             return playersPoint;
         }
     }
 
-    class CrapsGame
+    class CrapsGame //Craps Game object, conatins game logic, and instances of other objects
     {
-        bool playing;
 
-        Player player = new Player();
-        Dice dieOne = new Dice();
-        Dice dieTwo = new Dice();
-        public void startGame()
+        bool playing;   //Boolean for game loop
+
+        Player player = new Player();   //Player instance
+        Dice dieOne = new Dice();   //1st die instance
+        Dice dieTwo = new Dice();   //2nd die instance
+        public void startGame() //Starting game function, holds game loop
         {
+
+            intro();    //Displays header and rules options
+
+            player.startPlayer();   //Initializes player
+
             playing = true;
 
             while (playing)
             {
-                Round round = new Round();
-                player.bet();
-                dieOne.roll();
-                dieTwo.roll();
-                showFaces();
-                checkRolls(round);
+                display();  //Header
+                Round round = new Round();  //New round made each iteration
+                player.bet();   //Handles players bet for round
+                dieOne.roll();  //Rolls 1st die
+                dieTwo.roll();  //Rolls 2nd die
+                showFaces();    //Shows faces of die
+                checkRolls(round);  //Compares the faces to the rules of craps
 
             }
 
         }
 
-        void showFaces()
+        void showFaces() //Displays die faces to player
         {
-            Console.WriteLine("First Die: " + dieOne.face);
+            Console.WriteLine("\nFirst Die: " + dieOne.face);
             Console.WriteLine("Second Die: " + dieTwo.face);
             Console.WriteLine("You rolled a: " + (dieTwo.face + dieOne.face));
         }
 
-        void checkRolls(Round round)
+        void checkRolls(Round round)    //Handles logic for first roll of a round
         {
             switch (dieOne.face + dieTwo.face)
             {
@@ -204,10 +212,10 @@ namespace Craps
                     Console.WriteLine("Round Loss!");
                     addLoss();
                     break;
-                default:
+                default:    //If player didn't win or lose, player must reroll for players point 
                     round.setPlayersPoint(dieOne.face + dieTwo.face);
                     Console.WriteLine("Players point: " + round.getPlayersPoint());
-                    reRoll(round);
+                    reRoll(round);  //Calls function with loop until win or loss for round
                     break;
 
 
@@ -215,44 +223,40 @@ namespace Craps
             }
         }
 
-        void reRoll(Round round)
+        void reRoll(Round round)    //Handles loop for rerolling until win/loss
         {
             while (((dieOne.face + dieTwo.face) != round.getPlayersPoint()) || (dieOne.face + dieTwo.face) != 7)
             {
-                Console.Write("\nNo point! must reroll again.");
+                Console.Write("\nNo point! Must roll a " + round.getPlayersPoint() + " to win round.\n" +   //Displays players point
+                    "       Press Enter to reroll. ");
                 Console.ReadLine();
                 dieOne.roll();
                 dieTwo.roll();
                 showFaces();
-                if ((dieOne.face + dieTwo.face) == round.getPlayersPoint())
+                if ((dieOne.face + dieTwo.face) == round.getPlayersPoint()) //Win if rolls players point
                 {
                     Console.WriteLine("Round Won!");
                     addWin();
                     break;
                 }
-                else if ((dieOne.face + dieTwo.face) == 7)
+                else if ((dieOne.face + dieTwo.face) == 7)  //Loss if rolls 7
                 {
                     Console.WriteLine("Round Loss!");
                     addLoss();
                     break;
                 }
-                else
-                {
-
-                }
             }
         }
 
-        void addWin()
+        void addWin()   //Adds win to player object and checks if player wants to continue
         {
-            Round.addWin();
             player.win();
             checkContinue();
         }
-        void addLoss()
+        void addLoss()  //Handles loss
         {
-            player.loss();
-            if (player.getChips() == 0)
+            player.loss();  //Adds loss to player
+            if (player.getChips() == 0) //If player is out of chips, asks to reset chip count
             {
                 Console.WriteLine("Out of chips! Game Over!");
                 Console.WriteLine("Reset chips? y/n");
@@ -265,31 +269,79 @@ namespace Craps
                     gameover();
                 }
             }
-            else
+            else    //Checks if player wants to continue
             {
                 checkContinue();
             }
         }
 
-        void gameover()
+        void gameover() //Displays player and round info, and ends main game loop
         {
             playing = false;
+            display();
             Console.WriteLine("\nGame quit, thank you for playing!");
             Console.WriteLine("Player: " + player.getName());
             Console.WriteLine("Final Chips: " + player.getChips());
             Console.WriteLine("Rounds played: " + Round.getRounds());
-            Console.WriteLine("Rounds Won: " + Round.getWins());
-            Console.WriteLine("Chip Resets: " + player.getResets());
+            Console.WriteLine("Rounds Won: " + player.getWins());
+            Console.WriteLine("Chip Resets: " + player.getResets() + "\n\n");
+            Console.WriteLine("Art inspired from https://www.asciiart.eu/");
 
 
         }
 
-        void checkContinue()
+        void checkContinue()    //Checks if players want to continue on loss
         {
             Console.WriteLine("Another Round? y/n");
             if ((Console.ReadLine().ToLower().Equals("n")))
             {
                 gameover();
+            }
+        }
+
+        void display()  //Displays the Craps header
+        {
+            Console.Clear();
+            Console.WriteLine(@"  ____ ");
+            Console.WriteLine(@" /\' .\       ___                         _____");
+            Console.WriteLine(@"/: \___\     / __\ __ __ _ _ __  ___     / .  /\");
+            Console.WriteLine(@"\' / . /    / / | '__/ _` | '_ \/ __|   /____/..\");
+            Console.WriteLine(@" \/___/    / /___ | | (_| | |_) \__ \   \'  '\  /");
+            Console.WriteLine(@"           \____/_|  \__,_| .__/|___/    \'__'\/");
+            Console.WriteLine(@"                          |_|     By Ryan Hull  ");
+        }
+
+        void displayRules() //Displays the rules of Craps according to instruction
+        {
+            Console.WriteLine(
+                @"             ____        _          " + "\n" +
+                @"            |  _ \ _   _| | ___ ___ " + "\n" +
+                @"            | |_) | | | | |/ _ \__ |" + "\n" +
+                @"            |  _ <| |_| | |  __\__ \" + "\n" +
+                @"            |_| \_\\__,_|_|\___|___/");
+            Console.WriteLine("\nCraps is a simple chance dice game");
+            Console.WriteLine("where a player rolls 2 die.");
+            Console.WriteLine("On the first roll of the die,");
+            Console.WriteLine("The player wins if they roll a 7, or 11");
+            Console.WriteLine("But, they lose if they roll a 2, 3, or 12");
+            Console.WriteLine("If the sum is 4, 5, 6, 8, 9, or 10 on the first throw,");
+            Console.WriteLine(@"then that sum is known as the player’s “point”");
+            Console.WriteLine(@"To win, you must reroll until you hit the “point”");
+            Console.WriteLine("where your sum of die is equal to the point.");
+            Console.WriteLine("However, if the player rolls a 7 before making");
+            Console.WriteLine("the point they lose the round.");
+            Console.WriteLine("\n    Press enter to start a game");
+            Console.ReadLine();
+        }
+
+        void intro()    //Checks if player wants to see rules or continue to game
+        {
+            display();
+            Console.WriteLine("\nPress enter to start, " +
+                "or enter 'r' to view Rules");
+            if (Console.ReadLine().ToLower() == "r")
+            {
+                displayRules();
             }
         }
     }
